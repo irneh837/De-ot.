@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#02040a">
+<meta name="description" content="De'ot — plataforma de estudos">
+<link rel="manifest" href="manifest.json">
+<title>De'ot — Protótipo 4</title>
+<style>
+:root{
+ --bg:#02040a;--panel:rgba(5,10,20,.86);--panel2:rgba(8,14,26,.94);--text:#eef7ff;--muted:#8ea2bd;
+ --blue:#21a9ff;--cyan:#18e8ff;--green:#22ff79;--pink:#ff258b;--purple:#9b55ff;--gold:#ffd24a;--orange:#ff9b22;
+ --line:#17345c;--shadow:0 0 26px rgba(30,150,255,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{
+ background:
+ radial-gradient(ellipse at 5% 5%,rgba(0,130,255,.15),transparent 30%),
+ radial-gradient(ellipse at 100% 95%,rgba(0,255,130,.11),transparent 32%),
+ #02040a;
+ overflow-x:hidden
+}
+body:before{
+ content:"";position:fixed;inset:-8%;z-index:-2;opacity:.36;
+ background:url("assets/deot_visual.png") center/cover no-repeat;
+ filter:saturate(1.25) contrast(1.05)
+}
+body:after{
+ content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(180deg,rgba(2,4,10,.22),rgba(2,4,10,.88))
+}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.app{width:min(1500px,100%);margin:auto;padding:14px 18px 34px}
+.topbar{
+ display:grid;grid-template-columns:230px minmax(240px,1fr) auto;gap:14px;align-items:center;
+ padding:10px 0 12px;position:sticky;top:0;z-index:30;
+ background:linear-gradient(180deg,rgba(2,4,10,.98),rgba(2,4,10,.78),transparent);
+ backdrop-filter:blur(12px)
+}
+.brand-mini{display:flex;align-items:center;gap:10px}
+.brand-mini img{width:54px;height:42px;object-fit:contain}
+.brand-mini strong{letter-spacing:3px;font-size:12px;color:#dcecff}
+.search{height:44px;border:1px solid #1d4e86;border-radius:14px;background:rgba(3,10,20,.8);display:flex;align-items:center;padding:0 12px;box-shadow:inset 0 0 20px rgba(20,130,255,.06)}
+.search input{border:0;outline:0;background:transparent;width:100%;color:white}
+.topstats{display:flex;align-items:center;justify-content:flex-end;gap:13px;white-space:nowrap}
+.mindbox{display:flex;align-items:center;gap:7px}
+.mindbox img{width:43px;height:43px;object-fit:contain}
+.metric{font-size:12px;color:var(--muted)}
+.metric b{color:#fff;font-size:16px}
+.divider{width:1px;height:30px;background:#31435a}
+.iconbtn,.pillbtn,.navbtn,.card,.panelbtn,.subjectbtn,.answer,.tab{
+ border:1px solid #164b84;background:linear-gradient(180deg,rgba(8,24,44,.96),rgba(3,10,19,.96));
+ box-shadow:inset 0 0 20px rgba(20,130,255,.07),0 0 16px rgba(10,120,255,.06);
+ border-radius:14px
+}
+.iconbtn{width:44px;height:40px}
+.progressbar{height:6px;border-radius:99px;background:#09182a;border:1px solid #163557;overflow:hidden}
+.progressbar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--green));box-shadow:0 0 15px rgba(0,220,255,.8)}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}
+.sidebar{
+ border:1px solid #17345c;border-radius:20px;background:rgba(3,9,18,.83);padding:13px;min-height:calc(100vh - 110px);
+ position:sticky;top:86px;align-self:start;box-shadow:var(--shadow)
+}
+.side-logo{width:150px;height:72px;display:block;object-fit:contain;margin:0 auto 10px}
+.side-nav{display:grid;gap:7px}
+.side-item{
+ display:flex;align-items:center;gap:12px;padding:12px;border:1px solid transparent;border-radius:12px;background:transparent;color:#d9e9ff;text-align:left
+}
+.side-item:hover,.side-item.active{border-color:#1c75c9;background:linear-gradient(90deg,rgba(20,130,255,.19),rgba(20,130,255,.03));box-shadow:0 0 16px rgba(20,130,255,.12)}
+.side-item span:first-child{font-size:20px;width:24px;text-align:center}
+.side-foot{margin-top:14px;padding-top:12px;border-top:1px solid #132842;display:grid;gap:8px}
+.content{min-width:0}
+.hero{
+ min-height:205px;border:1px solid #1a5a9c;border-radius:20px;overflow:hidden;
+ background:
+ radial-gradient(circle at 78% 55%,rgba(0,255,120,.15),transparent 22%),
+ linear-gradient(90deg,rgba(3,9,18,.96),rgba(3,12,24,.7)),
+ url("assets/deot_visual.png") center/cover;
+ box-shadow:0 0 30px rgba(0,140,255,.12);padding:24px;display:flex;align-items:center;justify-content:space-between
+}
+.hero h1{font-size:30px;letter-spacing:1px;margin:0 0 8px}.hero p{margin:0;color:#b6c9df}.hero .quote{color:var(--green);font-weight:800}
+.hero-flame{width:180px;height:180px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(255,170,50,.55))}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.quick button{padding:13px;font-weight:700;letter-spacing:1px}
+.panel{
+ background:var(--panel);border:1px solid #15375f;border-radius:18px;padding:15px;box-shadow:var(--shadow)
+}
+.panel h2,.panel h3{margin:0 0 10px}.muted{color:var(--muted)}
+.home-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px}
+.area-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.area-card{
+ min-height:170px;padding:22px;border-radius:20px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:8px
+}
+.area-card .bigicon{font-size:54px}.area-card h2{margin:0;letter-spacing:4px}
+.humanas{border-color:rgba(255,37,139,.7);box-shadow:inset 0 -60px 90px rgba(255,37,139,.09),0 0 25px rgba(255,37,139,.12)}
+.exatas{border-color:rgba(33,169,255,.7);box-shadow:inset 0 -60px 90px rgba(33,169,255,.09),0 0 25px rgba(33,169,255,.12)}
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.panelbtn,.subjectbtn,.tab{padding:13px;text-align:center}
+.panelbtn:hover,.subjectbtn:hover,.tab:hover{border-color:#28b5ff;box-shadow:0 0 20px rgba(28,170,255,.18)}
+.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.subjectbtn{text-align:left;min-height:74px}.subjectbtn b{display:block;font-size:16px}.subjectbtn small{color:var(--muted)}
+.headerline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.back{margin-bottom:12px}
+.section-title{font-size:26px;margin:3px 0 4px;letter-spacing:2px}.under{height:3px;width:230px;background:linear-gradient(90deg,var(--pink),var(--cyan));border-radius:99px;margin:8px 0 18px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.tab.active{border-color:var(--green);box-shadow:0 0 18px rgba(0,255,120,.16);background:linear-gradient(180deg,rgba(0,190,150,.18),rgba(3,10,19,.96))}
+.theme-list{display:grid;gap:8px}
+.theme{
+ width:100%;text-align:left;padding:14px;border-radius:13px;border:1px solid #1b385d;background:rgba(4,11,20,.9)
+}
+.theme:hover{border-color:#28b5ff}
+.resource-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.map{width:100%;display:block;border-radius:14px;border:1px solid #1e5b99;background:#fff;margin-top:10px}
+.map-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.map-card{overflow:hidden}.map-card img{width:100%;display:block;max-height:330px;object-fit:contain;background:#fff}.map-card .body{padding:12px}
+.quiz-card{max-width:850px;margin:auto}.qtop{display:flex;justify-content:space-between;align-items:center;gap:8px}.points{color:var(--gold);font-weight:800}.difficulty{border:1px solid var(--gold);color:var(--gold);padding:4px 8px;border-radius:8px;font-size:11px}
+.question{font-size:21px;line-height:1.55;margin:24px 0}.answers{display:grid;gap:9px}.answer{text-align:left;padding:13px 15px}.answer.correct{border-color:var(--green);background:rgba(34,255,121,.08)}.answer.wrong{border-color:#ff5574;background:rgba(255,55,90,.08)}
+.cta{width:100%;padding:14px;border-radius:14px;border:1px solid #1fb0ff;background:linear-gradient(180deg,rgba(24,169,255,.23),rgba(3,10,20,.96));margin-top:12px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.statbox{padding:13px;border-radius:14px;border:1px solid #173b66;background:rgba(5,12,23,.9)}.statbox strong{font-size:22px}
+.rank-podium{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px;align-items:end;margin:15px 0}.rank-card{padding:17px;text-align:center;border-radius:16px;border:1px solid #1c4c82;background:rgba(5,12,23,.92)}.rank-card.first{border-color:var(--gold);box-shadow:0 0 25px rgba(255,210,70,.12)}.rank-card h3{margin:7px 0}
+.rank-list{display:grid;gap:7px}.rank-row{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid #16385f;border-radius:12px;background:rgba(4,11,20,.88)}
+.rank-num{border:1px solid #1b6cb3;border-radius:9px;text-align:center;padding:5px;color:#6ed0ff}
+.doubt{padding:13px;border:1px solid #1b4e87;border-radius:15px;margin-top:9px;background:rgba(5,10,20,.85)}.tag{display:inline-block;padding:4px 8px;border-radius:99px;border:1px solid #2b68a2;font-size:10px;letter-spacing:1px}
+.doubt p{margin:8px 0;color:#dce8f6}.reply{padding:8px 11px;border-radius:10px;border:1px solid #3159e8;background:rgba(40,70,255,.09)}
+.daily{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.achievement-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.achievement{padding:12px;text-align:center;border:1px solid #1b3e67;border-radius:14px}.achievement .aicon{font-size:25px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.profile-avatar{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;border:1px solid #20b0ff;font-size:34px;background:rgba(15,90,160,.12);box-shadow:0 0 20px rgba(30,170,255,.2)}
+.form{display:grid;gap:9px}.form input,.form textarea,.form select{width:100%;padding:12px;border-radius:11px;border:1px solid #1a426e;background:#040b15}
+.notice{padding:10px 12px;border-radius:11px;border:1px solid #6d4d11;background:rgba(255,200,70,.07);color:#ffe9a8}
+.hidden{display:none!important}
+.toast{position:fixed;right:16px;bottom:16px;z-index:100;padding:12px 15px;border:1px solid #1d7ed0;background:#061322;border-radius:12px;box-shadow:0 0 25px rgba(20,130,255,.25)}
+.mobile-nav{display:none}
+@media(max-width:1050px){
+ .layout{grid-template-columns:1fr}.sidebar{display:none}.mobile-nav{display:grid;position:fixed;bottom:0;left:0;right:0;z-index:50;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;background:rgba(2,5,11,.95);border-top:1px solid #15365b}.mobile-nav button{padding:9px;border-radius:10px;border:1px solid #164574;background:#050c16}.app{padding-bottom:78px}
+ .home-grid{grid-template-columns:1fr 1fr}.home-grid .wide{grid-column:1/-1}
+}
+@media(max-width:720px){
+ .app{padding:8px 10px 82px}.topbar{grid-template-columns:1fr auto}.topbar .search{grid-column:1/-1;grid-row:2}.brand-mini{display:none}.topstats{gap:7px}.hero{min-height:230px}.hero-flame{width:125px;height:125px}.hero h1{font-size:25px}
+ .quick{grid-template-columns:1fr}.area-grid,.subjects,.map-grid,.profile-grid{grid-template-columns:1fr}.action-grid,.resource-grid{grid-template-columns:1fr}.home-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.achievement-grid{grid-template-columns:1fr 1fr}.rank-podium{grid-template-columns:1fr}
+ .section-title{font-size:21px}.question{font-size:18px}.hero p{font-size:13px}
+}
+
+/* ===== DE'OT PROTÓTIPO 5 ===== */
+body::after{
+  content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;opacity:.42;
+  background-image:radial-gradient(circle,#28a9ff 1px,transparent 1.5px),radial-gradient(circle,#20df9b 1px,transparent 1.5px);
+  background-size:27px 27px,43px 43px;background-position:0 0,13px 17px;
+  animation:deotParticleWave 16s linear infinite;
+}
+@keyframes deotParticleWave{
+  0%{transform:translate3d(-2%,1%,0) rotate(-1deg)}
+  50%{transform:translate3d(2%,-1%,0) rotate(1deg)}
+  100%{transform:translate3d(-2%,1%,0) rotate(-1deg)}
+}
+.p5-wave{position:relative;overflow:hidden}
+.p5-wave::before{
+ content:"";position:absolute;inset:-80%;pointer-events:none;opacity:.13;
+ background-image:radial-gradient(circle,#fff 1px,transparent 1.6px);
+ background-size:17px 17px;transform:rotate(-7deg);animation:p5ButtonWave 9s linear infinite;
+}
+.p5-wave>*{position:relative}
+.p5-humanas{border-color:#c7354f!important;background:linear-gradient(135deg,rgba(199,53,79,.22),rgba(8,13,21,.92))!important}
+.p5-exatas{border-color:#258ed8!important;background:linear-gradient(135deg,rgba(37,142,216,.22),rgba(8,13,21,.92))!important}
+.p5-ling{border-color:#a85bd6!important}
+@keyframes p5ButtonWave{from{transform:translateX(-30px) rotate(-7deg)}to{transform:translateX(30px) rotate(-7deg)}}
+.p5-stellar{border-color:#9d7cff!important;background:linear-gradient(135deg,rgba(68,38,125,.35),rgba(8,13,21,.94))!important}
+.p5-chat{max-width:850px;margin:20px auto;background:rgba(7,12,20,.70)!important}
+.p5-tag{display:inline-block;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.p5-perf{margin-top:14px;padding:16px;border-radius:18px;background:rgba(7,12,20,.76);border:1px solid #29364a}
+.p5-select{width:100%;padding:11px;background:#060b12;color:#fff;border:1px solid #334159;border-radius:10px}
+.p5-chart{width:100%;height:230px;background:#03060b;border:1px solid #25334a;border-radius:14px;margin-top:12px}
+.p5-stellar-screen{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.p5-stars{min-height:300px;border-radius:20px;background:radial-gradient(circle,#12224a,#02040a 68%);display:flex;align-items:center;justify-content:center;gap:45px}
+.p5-star{border-radius:50%;box-shadow:0 0 45px 12px rgba(73,174,255,.20)}
+.p5-star.big{width:120px;height:120px;background:radial-gradient(circle at 35% 30%,#fff,#8ed8ff 40%,#2b68cf 73%,#080d26)}
+.p5-star.small{width:80px;height:80px;background:radial-gradient(circle at 35% 30%,#fff,#c6a9ff 40%,#6939ba 73%,#100822)}
+.p5-planet{border-radius:50%;width:145px;height:145px;margin:8px auto 14px;background:radial-gradient(circle at 35% 30%,#a9a9a9,#555 48%,#171717 76%);box-shadow:inset -20px -15px 30px #0008,0 0 25px #7774}
+.p5-focus{position:fixed;right:0;top:0;width:33.333vw;min-width:310px;height:100vh;z-index:100;background:rgba(3,7,14,.97);border-left:1px solid #334159;padding:16px;overflow:auto}
+.p5-focus .p5-planet{width:175px;height:175px}
+.p5-timer{text-align:center;font-size:30px;font-weight:800;margin:8px}
+.p5-report{background:#180c13;border:1px solid #71384d;border-radius:14px;padding:12px;margin:8px 0}
+@media(max-width:700px){.p5-stellar-screen{grid-template-columns:1fr}.p5-focus{width:92vw;min-width:0}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand-mini"><img src="assets/deot_visual.png" alt="De'ot"><strong>ESTUDOS INTELIGENTES</strong></div>
+  <div class="search"><span>⌕</span><input id="searchInput" placeholder="Buscar conteúdos, mapas, quizzes..." oninput="searchAll(this.value)"></div>
+  <div class="topstats">
+    <div class="metric">MENTAL HEALTH</div><div class="divider"></div>
+    <div class="mindbox"><img id="flame" src="assets/mindflame_apagada.jpg" alt="Mind Flame"><b id="streak">0</b></div>
+    <div class="divider"></div><div class="metric"><b id="points">0</b> ✦</div>
+    <button class="iconbtn" onclick="profile()" aria-label="Perfil">◯</button>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <img class="side-logo" src="assets/deot_visual.png" alt="De'ot">
+  <div class="side-nav">
+    <button class="side-item active" data-nav="home" onclick="home()"><span>⌂</span>Início</button>
+    <button class="side-item" data-nav="ranking" onclick="ranking()"><span>♛</span>Ranking</button>
+    <button class="side-item" data-nav="home" onclick="home()"><span>⌂</span>Casa</button>
+    <button class="side-item" data-nav="doubts" onclick="doubts()"><span>☵</span>Dúvidas</button>
+    <button class="side-item" data-nav="maps" onclick="mapsPage()"><span>♧</span>Mapas Mentais</button>
+    <button class="side-item" data-nav="quiz" onclick="quizHub()"><span>▦</span>Quiz</button>
+    <button class="side-item" data-nav="profile" onclick="profile()"><span>♙</span>Meu Perfil</button>
+  </div>
+  <div class="side-foot">
+    <button class="side-item" onclick="settings()"><span>⚙</span>Configurações</button>
+    <button class="side-item" onclick="admin()"><span>⌘</span>Área administrativa</button>
+  </div>
+</aside>
+
+<main class="content" id="main"><div class="card p5-wave p5-stellar" onclick="p5Open('stellar5')"><h2>🌌 Meu Sistema Stelar</h2><p>Estude e faça seus planetas evoluírem.</p></div>
+</main>
+</div>
+</div>
+
+<nav class="mobile-nav">
+  <button onclick="ranking()">♛<br>Ranking</button>
+  <button onclick="home()">⌂<br>Casa</button>
+  <button onclick="doubts()">☵<br>Dúvidas</button>
+  <button onclick="profile()">♙<br>Perfil</button>
+</nav>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const A="assets/";
+const MAPS={
+ "Física — Plano Inclinado":"mapa_fisica_plano_inclinado.jpg",
+ "Química — Geometria Molecular":"mapa_quimica_geometria_molecular.jpg",
+ "Matemática — Equações Modulares":"mapa_matematica_equacoes_modulares.jpg",
+ "Geografia — Formas de Degradação do Solo":"mapa_geografia_degradacao_solo.jpg"
+};
+const subjects={
+ "Exatas":[["Matemática","Equações Modulares","Função afim","Função quadrática","Porcentagem","Geometria plana","Probabilidade"],["Física","Plano Inclinado","Cinemática","Leis de Newton","Energia","Eletricidade"],["Química","Geometria Molecular","Estequiometria","Ligações químicas","Soluções","Ácidos e bases"]],
+ "Humanas":[["História","Brasil","Idade Moderna","Contemporânea"],["Geografia","Degradação do Solo","Cartografia","Clima","Urbanização","Geopolítica"],["Filosofia","Ética","Conhecimento","Política"],["Sociologia","Cultura","Sociedade","Cidadania"]],
+ "Linguagens":[["Português","Gramática","Interpretação","Sintaxe","Literatura"],["Espanhol","Interpretação","Gramática","Vocabulário"],["Inglês","Reading","Grammar","Vocabulary"]]
+};
+const quizzes={
+"Física — Plano Inclinado":[
+["Um bloco de 4 kg está em um plano inclinado de 30°, sem atrito. Adote g=10 m/s². Qual é a aceleração do bloco ao descer?",["2 m/s²","5 m/s²","8,7 m/s²","10 m/s²"],1,10,"Médio"],
+["Uma caixa de 10 kg está em repouso em um plano de 30°, sem atrito. Uma força paralela ao plano impede que ela deslize. Qual o módulo dessa força?",["25 N","50 N","86,6 N","100 N"],1,20,"Médio"],
+["Um bloco parte do repouso e desliza por um plano de 30°, sem atrito, durante 2 s. Qual sua velocidade ao final?",["5 m/s","10 m/s","15 m/s","20 m/s"],1,30,"Médio"],
+["Um bloco de 20 kg sobe um plano de 30° com velocidade constante. Há uma força de atrito de 20 N contrária ao movimento. Adote g=10 m/s². Qual força paralela ao plano deve ser aplicada?",["80 N","100 N","120 N","140 N"],2,40,"Difícil"],
+["Dois blocos de massas diferentes deslizam em planos inclinados iguais e sem atrito. Desprezando outras forças, qual afirmação é correta?",["Eles possuem a mesma aceleração","O mais pesado acelera mais","O mais leve acelera mais","A aceleração depende apenas da massa"],0,60,"Difícil"]
+],
+"Química — Geometria Molecular":[
+["Pela teoria VSEPR, qual é a geometria molecular do CO₂?",["Angular","Linear","Trigonal plana","Tetraédrica"],1,10,"Médio"],
+["A molécula NH₃ tem três ligações N–H e um par de elétrons não ligante no N. Sua geometria molecular é:",["Linear","Angular","Piramidal trigonal","Tetraédrica"],2,20,"Médio"],
+["Por que a geometria molecular pode influenciar a polaridade de uma molécula?",["Porque a disposição espacial determina como os dipolos das ligações se combinam","Porque a massa molecular define diretamente a polaridade","Porque toda ligação polar torna a molécula polar","Porque somente o número de átomos importa"],0,30,"Médio"],
+["As geometrias de CH₄, H₂O e SO₂ são, respectivamente:",["Angular, linear e tetraédrica","Tetraédrica, angular e angular","Trigonal plana, angular e linear","Linear, tetraédrica e trigonal plana"],1,40,"Difícil"],
+["Um átomo central possui quatro domínios eletrônicos, mas alguns são pares livres. A conclusão correta é:",["A geometria molecular pode não ser tetraédrica","Quatro domínios sempre significam quatro átomos ligados","A VSEPR ignora pares livres","A geometria não depende dos elétrons"],0,60,"Difícil"]
+],
+"Matemática — Equações Modulares":[
+["Resolva |x−4|=3.",["x=1 ou x=7","x=−1 ou x=7","x=4 ou x=7","x=−3 ou x=3"],0,10,"Médio"],
+["Resolva |2x+1|=5.",["x=−2 ou x=3","x=−3 ou x=2","x=−4 ou x=1","x=−5 ou x=2"],1,20,"Médio"],
+["Resolva |3x−6|=2.",["x=1/3 ou x=2","x=4/3 ou x=8/3","x=−4/3 ou x=8/3","x=2/3 ou x=4"],1,30,"Médio"],
+["Resolva |x−2|=x+1.",["x=−3","x=1/2","x=2","x=3"],1,40,"Difícil"],
+["Resolva |2x−4|=|x+2|.",["x=−2 ou x=6","x=2/3 ou x=6","x=−6 ou x=2/3","x=2 ou x=6"],1,60,"Difícil"]
+],
+"Geografia — Formas de Degradação do Solo":[
+["Em uma região semiárida, a retirada da vegetação e o uso inadequado da terra provocam perda progressiva da capacidade produtiva. Esse processo é principalmente:",["Desertificação","Eutrofização","Inversão térmica","Assoreamento"],0,10,"Médio"],
+["A retirada da cobertura vegetal deixa o solo exposto à chuva e ao escoamento superficial, que transporta partículas para áreas mais baixas. Trata-se principalmente de:",["Erosão do solo","Salinização","Inversão térmica","Laterização"],0,20,"Médio"],
+["Qual medida ajuda diretamente a reduzir a erosão hídrica em uma área agrícola?",["Aumentar a exposição do solo","Manter cobertura vegetal sobre o solo","Eliminar matéria orgânica","Intensificar o revolvimento"],1,30,"Médio"],
+["A compactação do solo causada pelo manejo inadequado pode provocar:",["Aumento da porosidade","Redução da infiltração de água","Aumento permanente da fertilidade","Formação espontânea de florestas"],1,40,"Difícil"],
+["Para compreender a degradação do solo, uma análise geográfica adequada deve:",["Considerar apenas o clima","Considerar apenas a vegetação","Ignorar atividades econômicas","Relacionar fatores naturais e ações humanas"],3,60,"Difícil"]
+]
+};
+let state=JSON.parse(localStorage.getItem("deot4_state")||'{"points":3000,"daily":0,"streak":13,"quizzes":0,"lastDate":null,"history":[],"weakThemes":[]}');
+let route=["home"], currentQuiz=null;
+
+function save(){localStorage.setItem("deot4_state",JSON.stringify(state))}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),2300)}
+function header(){
+ document.getElementById("points").textContent=state.points;
+ document.getElementById("streak").textContent=state.streak;
+ const f=document.getElementById("flame");
+ let s="mindflame_apagada.jpg";
+ if(state.daily>=100)s="mindflame_acesa.jpg";
+ else if(state.streak>=2 && state.daily>0)s="mindflame_2dias.jpg";
+ else if(state.streak===1 && state.daily===0)s="mindflame_1dia.png";
+ else if(state.daily>0)s="mindflame_acesa.jpg";
+ f.src=A+s; f.onerror=()=>f.src=A+"mindflame_apagada.jpg";
+}
+function setActive(nav){document.querySelectorAll(".side-item[data-nav]").forEach(x=>x.classList.toggle("active",x.dataset.nav===nav))}
+function render(x,nav){document.getElementById("main").innerHTML=x;header();if(nav)setActive(nav);window.scrollTo({top:0,behavior:"smooth"})}
+function back(){if(route.length>1){route.pop();show(route.at(-1));}else home()}
+function home(){route=["home"];show("home")}
+function show(page,arg){
+ if(page==="home") render(homeHTML(),"home");
+ if(page==="area") render(areaHTML(arg),"home");
+ if(page==="subject") render(subjectHTML(arg),"home");
+ if(page==="theme") render(themeHTML(arg),"home");
+ if(page==="maps") render(mapsHTML(),"maps");
+ if(page==="map") render(mapHTML(arg),"maps");
+ if(page==="quizhub") render(quizHubHTML(),"quiz");
+ if(page==="quiz") drawQuiz();
+ if(page==="ranking") render(rankingHTML(),"ranking");
+ if(page==="doubts") render(doubtsHTML(),"doubts");
+ if(page==="profile") render(profileHTML(),"profile");
+ if(page==="settings") render(settingsHTML());
+ if(page==="admin") render(adminHTML());
+}
+function homeHTML(){
+ const daily=Math.min(100,state.daily);
+ return `<section class="hero">
+  <div><div class="muted">PLATAFORMA DE ESTUDOS</div><h1>Disciplina hoje,<br><span class="quote">liberdade amanhã.</span></h1><p>Continue sua sequência e transforme cada exercício em progresso.</p></div>
+  <img class="hero-flame" src="assets/mindflame_acesa.jpg" alt="Mind Flame">
+ </section>
+ <div class="quick">
+  <button class="panelbtn" onclick="ranking()">♛ &nbsp; RANKING</button><button class="panelbtn" onclick="home()">⌂ &nbsp; CASA</button><button class="panelbtn" onclick="doubts()">☵ &nbsp; DÚVIDAS</button>
+ </div>
+ <div class="home-grid">
+  <button class="card area-card humanas" onclick="area('Humanas')" class="p5-wave p5-humanas"><div class="bigicon">♜</div><h2>HUMANAS</h2><span class="muted">História · Geografia · Filosofia · Sociologia</span></button>
+  <button class="card area-card exatas" onclick="area('Exatas')" class="p5-wave p5-exatas"><div class="bigicon">⚛</div><h2>EXATAS</h2><span class="muted">Matemática · Física · Química</span></button>
+  <section class="panel wide"><div class="headerline"><h3>Seu progresso</h3><b>${daily}%</b></div>${progressRows()} </section>
+  <section class="panel"><h3>Mapas Mentais</h3><div class="action-grid"><button class="panelbtn" onclick="mapsPage()">♧<br>Mapas</button><button class="panelbtn" onclick="mapOpen('Física — Plano Inclinado')">⚛<br>Física</button><button class="panelbtn" onclick="mapOpen('Matemática — Equações Modulares')">▦<br>Matemática</button></div></section>
+  <section class="panel"><h3>Quiz de Matemática</h3><div class="muted">Equações Modulares</div><button class="cta" onclick="startQuiz('Matemática — Equações Modulares')">Iniciar quiz →</button></section>
+  <section class="panel"><h3>Dúvidas</h3><div class="muted">Tire dúvidas, veja respostas e marque o que ajudou.</div><button class="cta" onclick="doubts()">Abrir comunidade →</button></section>
+  <section class="panel wide"><div class="daily"><div><h3>🔥 Progresso diário</h3><div class="progressbar"><span style="width:${daily}%"></span></div><p class="muted">${daily}/100 pontos para fortalecer a Mind Flame.</p></div><b>${state.streak} dias</b></div></section>
+  <section class="panel wide"><h3>Conquistas</h3><div class="achievement-grid"><div class="achievement"><div class="aicon">🔥</div><b>1 dia</b></div><div class="achievement"><div class="aicon">💜</div><b>2 dias</b></div><div class="achievement"><div class="aicon">⭐</div><b>7 dias</b></div><div class="achievement"><div class="aicon">♛</div><b>30 dias</b></div></div></section>
+ </div>`;
+}
+function progressRows(){
+ const rows=[["Matemática",75,"var(--blue)"],["Química",50,"var(--pink)"],["Física",25,"var(--cyan)"],["Humanas",40,"var(--pink)"],["Linguagens",35,"var(--purple)"],["Geografia",30,"var(--orange)"]];
+ return rows.map(r=>`<div style="margin:9px 0"><div class="headerline" style="margin:0 0 5px"><span>${r[0]}</span><span class="muted">${r[1]}%</span></div><div class="progressbar"><span style="width:${r[1]}%;background:${r[2]}"></span></div></div>`).join("");
+}
+function area(a){route=["home","area"];show("area",a)}
+function areaHTML(a){
+ let extra=a==="Humanas"?["História","Geografia","Filosofia","Sociologia"]:["Matemática","Física","Química"];
+ return `<button class="panelbtn back" onclick="back()">‹ Voltar</button><h1 class="section-title">${a.toUpperCase()}</h1><div class="under"></div><div class="subjects">${extra.map(s=>`<button class="subjectbtn" onclick="subject('${s}')"><b>${s}</b><small>Selecionar matéria →</small></button>`).join("")}</div>
+ <section class="panel" style="margin-top:14px"><h3>Linguagens</h3><p class="muted">A área fica acessível pela navegação, como combinado.</p><button class="panelbtn" onclick="area('Linguagens')">Abrir Linguagens →</button></section>`;
+}
+function subject(s){route=["home","area","subject"];show("subject",s)}
+function subjectHTML(s){
+ const item=[...Object.values(subjects).flat()].find(x=>x[0]===s)||[s];
+ const themes=item.slice(1);
+ return `<button class="panelbtn back" onclick="back()">‹ Voltar</button><h1 class="section-title">${s.toUpperCase()}</h1><div class="under"></div>
+ <div class="tabs"><button class="tab active">Temas</button><button class="tab" onclick="mapsPage()">Mapas Mentais</button><button class="tab" onclick="quizHub()">Quiz</button></div>
+ <div class="theme-list">${themes.map(t=>`<button class="theme" onclick="theme('${s}','${t}')"><b>${t}</b><br><span class="muted">Abrir tema e recursos →</span></button>`).join("")}</div>`;
+}
+function theme(s,t){const k=key(s,t);route=["home","area","subject","theme"];show("theme",k)}
+function key(s,t){
+ if(MAPS[s+" — "+t]) return s+" — "+t;
+ if(s==="Geografia"&&t==="Degradação do Solo")return "Geografia — Formas de Degradação do Solo";
+ return s+" — "+t;
+}
+function themeHTML(k){
+ return `<button class="panelbtn back" onclick="back()">‹ Voltar</button><h1 class="section-title">${k.split(" — ").slice(1).join(" — ").toUpperCase()}</h1><div class="under"></div>
+ <div class="resource-grid"><button class="panelbtn" onclick="alert('Resumo: conteúdo administrável nesta versão.')">▤<br>Resumos</button><button class="panelbtn" onclick="mapOpen('${k}')">♧<br>Mapas Mentais</button><button class="panelbtn" onclick="alert('Vídeos: cadastro reservado ao administrador.')">▶<br>Vídeos</button></div>
+ <section class="panel" style="margin-top:14px"><h3>Quiz</h3><p class="muted">Bloco de 5 questões com pontuação 10, 20, 30, 40 e 60.</p><button class="cta" onclick="startQuiz('${k}')">Iniciar Quiz →</button></section>
+ <section class="panel"><h3>Quiz Personalizado</h3><p class="muted">Foca nos temas e questões em que você apresenta mais dificuldade.</p><button class="panelbtn" onclick="toast('Quiz personalizado preparado com base no desempenho local.')">Personalizar →</button></section>
+ <section class="panel"><h3>Dúvida sobre este tema</h3><button class="panelbtn" onclick="doubts('${k}')">Abrir dúvidas →</button></section>`;
+}
+function mapsPage(){route=["maps"];show("maps")}
+function mapsHTML(){
+ const entries=Object.entries(MAPS);
+ return `<button class="panelbtn back" onclick="home()">‹ Voltar</button><h1 class="section-title">MAPAS MENTAIS</h1><div class="under"></div>
+ <div class="tabs"><button class="tab" onclick="alert('Resumos administráveis.')">▤ Resumos</button><button class="tab active">♧ Mapas Mentais</button><button class="tab" onclick="alert('Vídeos administráveis.')">▶ Vídeos</button></div>
+ <div class="notice">É necessário ter <b>3.000 pontos ou mais</b> para publicar um mapa mental.</div>
+ <div class="map-grid" style="margin-top:12px">${entries.map(([k,v])=>`<article class="panel map-card"><img src="${A+v}" alt="${k}"><div class="body"><b>${k}</b><p class="muted">Mapa oficial adicionado ao protótipo.</p></div></article>`).join("")}</div>`;
+}
+function mapOpen(k){if(MAPS[k]){route.push("map");show("map",k)}else toast("Ainda não há mapa cadastrado para este tema.")}
+function mapHTML(k){return `<button class="panelbtn back" onclick="back()">‹ Voltar</button><h1 class="section-title">${k}</h1><div class="under"></div><img class="map" src="${A+MAPS[k]}" alt="${k}">`}
+function quizHub(){route=["quizhub"];show("quizhub")}
+function quizHubHTML(){
+ const keys=Object.keys(quizzes);
+ return `<button class="panelbtn back" onclick="home()">‹ Voltar</button><h1 class="section-title">QUIZ</h1><div class="under"></div><section class="panel"><h3>Escolha um tema</h3><p class="muted">Cada quiz possui 5 questões. Pontos: 10, 20, 30, 40 e 60. Errar desconta metade do valor.</p><div class="theme-list">${keys.map(k=>`<button class="theme" onclick="startQuiz('${k}')"><b>${k}</b><br><span class="muted">5 questões →</span></button>`).join("")}</div></section>`;
+}
+function startQuiz(k){
+ if(!quizzes[k]){toast("Quiz deste tema ainda não cadastrado.");return}
+ currentQuiz={key:k,i:0,score:0,selected:null};
+ route.push("quiz");drawQuiz();
+}
+function drawQuiz(){
+ const q=quizzes[currentQuiz.key][currentQuiz.i];
+ render(`<section class="panel quiz-card"><div class="qtop"><span>✦ <b class="points">${q[3]}</b> pontos</span><span class="difficulty">${q[4]}</span><span>${currentQuiz.i+1}º</span></div>
+ <div class="progressbar" style="margin-top:12px"><span style="width:${((currentQuiz.i+1)/5)*100}%"></span></div>
+ <div class="question">${q[0]}</div><div class="answers">${q[1].map((a,i)=>`<button class="answer" onclick="choose(${i})">${String.fromCharCode(65+i)} &nbsp; ${a}</button>`).join("")}</div>
+ <button id="next" class="cta hidden" onclick="nextQuestion()">Continuar</button></section>`,"quiz");
+}
+function choose(i){
+ if(currentQuiz.selected!==null)return;
+ currentQuiz.selected=i;const q=quizzes[currentQuiz.key][currentQuiz.i];const correct=i===q[2];const delta=correct?q[3]:-(q[3]/2);currentQuiz.score+=delta;
+ document.querySelectorAll(".answer").forEach((b,n)=>{if(n===q[2])b.classList.add("correct");if(n===i&&i!==q[2])b.classList.add("wrong")});
+ const next=document.getElementById("next");next.classList.remove("hidden");next.textContent=correct?`Correto! +${q[3]} pts`:`Incorreto. ${delta} pts`;
+}
+function nextQuestion(){currentQuiz.i++;currentQuiz.selected=null;if(currentQuiz.i<5)drawQuiz();else finishQuiz()}
+function finishQuiz(){
+ state.points=Math.max(0,Math.round(state.points+currentQuiz.score));
+ state.daily=Math.max(0,Math.min(100,Math.round(state.daily+Math.max(0,currentQuiz.score))));
+ state.quizzes++;
+ state.history.unshift({theme:currentQuiz.key,score:currentQuiz.score,date:new Date().toLocaleDateString("pt-BR")});
+ if(state.history.length>10)state.history.pop();
+ save();const score=currentQuiz.score;currentQuiz=null;route.pop();
+ render(`<section class="panel quiz-card"><h1>Quiz concluído!</h1><div class="stats-grid"><div class="statbox"><span class="muted">Resultado</span><br><strong>${score>=0?"+":""}${score}</strong></div><div class="statbox"><span class="muted">Total</span><br><strong>${state.points}</strong></div><div class="statbox"><span class="muted">Diário</span><br><strong>${state.daily}/100</strong></div></div><p class="muted">Comparação com o último quiz e análise detalhada ficam registradas no perfil.</p><button class="cta" onclick="home()">Voltar ao início</button></section>`);
+}
+function ranking(){route=["ranking"];show("ranking")}
+function rankingHTML(){
+ const names=[["LucasNeri",state.points],["MarianaSilva",2670],["Gabriel123",2520],["AnaClara",2375],["Pedro_Hist",2240],["RafaGeo",2105],["JuliaQuim",1980],["FelipeBio",1865],["LeticiaLing",1750],["VitorMat",1620]];
+ return `<h1 class="section-title">RANKING</h1><div class="under"></div><div class="tabs"><button class="tab active">Geral</button><button class="tab">Semanal</button><button class="tab">Mensal</button></div>
+ <div class="rank-podium"><div class="rank-card"><div>♛</div><h3>2º</h3><b>MarianaSilva</b><p>2670 ✦</p></div><div class="rank-card first"><div>♛</div><h3>1º</h3><b>LucasNeri</b><p>${state.points} ✦</p></div><div class="rank-card"><div>♛</div><h3>3º</h3><b>Gabriel123</b><p>2520 ✦</p></div></div>
+ <section class="panel"><div class="rank-list">${names.slice(3).map((n,i)=>`<div class="rank-row"><span class="rank-num">${i+4}</span><span>♙ &nbsp;${n[0]}</span><b>${n[1]} ✦</b></div>`).join("")}</div></section>`;
+}
+function doubts(){
+ route=["doubts"];show("doubts")
+}
+function doubtsHTML(){
+ const ds=[["MATEMÁTICA","Lucas_neri","Alguém pode me explicar como resolver esse tipo de inequação? Não entendi o passo a passo..."],["QUÍMICA","Gabriela123","Qual a diferença entre ligação iônica e ligação covalente? E em quais casos cada uma ocorre?"],["HISTÓRIA","Pedro_Hist","Quais foram as principais causas da Revolução Francesa e como ela influenciou o mundo atual?"],["GEOGRAFIA","RafaelGeo","O que explica a diferença de clima entre o litoral e o interior do Brasil?"],["LINGUAGENS","Lari_Arts","Qual é a função da figura de linguagem chamada metáfora? Pode dar exemplos?"]];
+ return `<h1 class="section-title">DÚVIDAS</h1><div class="under"></div><button class="cta" onclick="newDoubt()">＋ MANDAR UMA DÚVIDA</button>
+ <section class="panel" style="margin-top:14px">${ds.map(d=>`<article class="doubt"><span class="tag">${d[0]}</span> <span class="muted">${d[1]} · 2h atrás</span><p>${d[2]}</p><button class="reply" onclick="replyDoubt('${d[0]}')">⊕ RESPONDER</button> <button class="reply" onclick="toast('Marcado como útil.')">♡ Me ajudou</button></article>`).join("")}</section>
+ <section class="panel"><h3>Regras da comunidade</h3><p class="muted">500+ pontos: publicar dúvidas. 1000+ pontos: responder. A reputação de contribuição é separada dos pontos de estudo.</p></section>`;
+}
+function newDoubt(){
+ if(state.points<500){toast("Você precisa de 500 pontos para publicar uma dúvida.");return}
+ const txt=prompt("Digite sua dúvida:");
+ if(txt)toast("Dúvida criada no protótipo local.");
+}
+function replyDoubt(){if(state.points<1000){toast("Você precisa de 1000 pontos para responder.");return}toast("Área de resposta aberta.")}
+function profile(){route=["profile"];show("profile")}
+function profileHTML(){
+ const hist=state.history.slice(0,5).map(h=>`<div class="rank-row"><span>▦</span><span>${h.theme}</span><b>${h.score>=0?"+":""}${h.score}</b></div>`).join("")||'<p class="muted">Nenhum quiz concluído nesta sessão.</p>';
+ return `<h1 class="section-title">MEU PERFIL</h1><div class="under"></div><div class="profile-grid">
+ <section class="panel"><div style="display:flex;align-items:center;gap:14px"><div class="profile-avatar">♙</div><div><h2 style="margin:0">LucasNeri</h2><p class="muted">Nível ${Math.floor(state.points/250)+1}</p></div></div><div class="stats-grid" style="margin-top:14px"><div class="statbox"><span class="muted">Pontos</span><br><strong>${state.points}</strong></div><div class="statbox"><span class="muted">Mind Flame</span><br><strong>${state.streak}d</strong></div><div class="statbox"><span class="muted">Quizzes</span><br><strong>${state.quizzes}</strong></div></div></section>
+ <section class="panel"><h3>Contribuição</h3><p class="muted">Publicações, respostas úteis, avaliações e conquistas de reputação.</p><div class="badge">Colaborador</div><div class="badge">Estudante ativo</div></section>
+ <section class="panel"><h3>Histórico de desempenho</h3><div class="rank-list">${hist}</div></section>
+ <section class="panel"><h3>Temas para reforçar</h3><p class="muted">O sistema identifica automaticamente os temas com pior desempenho e alimenta o Quiz Personalizado.</p><button class="panelbtn" onclick="quizHub()">Abrir Quiz Personalizado →</button></section>
+ </div>`;
+}
+function settings(){route=["settings"];show("settings")}
+function settingsHTML(){return `<button class="panelbtn back" onclick="home()">‹ Voltar</button><h1 class="section-title">CONFIGURAÇÕES</h1><div class="under"></div><section class="panel form"><label>Nome de usuário<input value="LucasNeri"></label><label>Meta diária<input type="number" value="100" min="10" max="100"></label><button class="cta" onclick="toast('Configurações salvas localmente.')">Salvar</button></section>`}
+function admin(){route=["admin"];show("admin")}
+function adminHTML(){return `<button class="panelbtn back" onclick="home()">‹ Voltar</button><h1 class="section-title">ÁREA ADMINISTRATIVA</h1><div class="under"></div><section class="panel"><div class="notice">Protótipo local: o painel demonstra a estrutura. Em produção, login, permissões, banco de dados e moderação devem ficar no backend.</div><div class="action-grid" style="margin-top:12px"><button class="panelbtn" onclick="toast('Questões: painel de cadastro aberto.')">Questões</button><button class="panelbtn" onclick="toast('Temas: painel de cadastro aberto.')">Temas</button><button class="panelbtn" onclick="toast('Resumos e mapas: painel de cadastro aberto.')">Resumos/Mapas</button><button class="panelbtn" onclick="toast('Vídeos: somente administrador.')">Vídeos</button><button class="panelbtn" onclick="toast('Moderação: denúncias e conteúdo.')">Moderação</button><button class="panelbtn" onclick="toast('Dificuldades: 10 / 20 / 30 / 40 / 60.')">Dificuldade</button></div></section>`}
+function searchAll(q){
+ if(!q.trim())return;
+ const found=[...Object.keys(quizzes),...Object.values(subjects).flat().flat()].filter(x=>String(x).toLowerCase().includes(q.toLowerCase()));
+ if(found.length)toast("Encontrado: "+found.slice(0,2).join(" · "));else toast("Nenhum resultado encontrado.");
+}
+header();home();
+
+/* ===== DE'OT P5 ENGINE ===== */
+const P5_PHASES=['Rocha','Rocha com veios de lava e vulcões','Atmosfera','Pequenos lagos','Oceanos','Vida vegetal','Grama','Arbustos','Árvores','Vida animal','Vida inteligente','Cidades','Naves'];
+const P5_THRESH=[30,60,90,150,210,300,420,540,660,780];
+let p5Data=JSON.parse(localStorage.getItem('deot_p5')||'null')||{planets:[],reports:[]};
+let p5Current=-1,p5Studying=false,p5Start=0,p5Elapsed=0,p5Timer=null,p5LastStudy=30,p5Return='home';
+function p5Save(){localStorage.setItem('deot_p5',JSON.stringify(p5Data));p5RenderPlanets();p5RenderReports()}
+function p5Open(id){p5Return=document.querySelector('.view.active')?.id||'home';document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');scrollTo(0,0)}
+function p5Back(){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(p5Return||'home')?.classList.add('active')}
+function p5CreatePlanet(){const n=prompt('Nome do planeta:','Novo planeta');if(!n)return;p5Data.planets.push({name:n,phase:0,total:0});p5Save();p5OpenPlanet(p5Data.planets.length-1)}
+function p5OpenPlanet(i){p5Current=i;const p=p5Data.planets[i];p5PlanetName.textContent=p.name;p5Focus.style.display='block';p5UpdateFocus()}
+function p5CloseFocus(){p5StopStudy();p5Focus.style.display='none';}
+function p5SetStudy(m){p5LastStudy=m;alert('Sessão selecionada: '+m+' minutos. Clique em Iniciar para começar.')}
+function p5ToggleStudy(){if(p5Studying){p5StopStudy();return}p5Studying=true;p5Start=Date.now();p5Elapsed=0;p5Start.textContent='■ Parar';p5Timer=setInterval(p5Tick,1000)}
+function p5Tick(){
+  p5Elapsed=Math.floor((Date.now()-p5Start)/1000);
+  const h=Math.floor(p5Elapsed/3600),m=Math.floor(p5Elapsed%3600/60),s=p5Elapsed%60;
+  p5Timer.textContent=[h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
+  const p=p5Data.planets[p5Current], added=Math.floor(p5Elapsed/60);
+  p.total=Math.max(p.total, p5SessionBase+added);
+  while(p.phase<P5_THRESH.length && p.total>=P5_THRESH[p.phase])p.phase++;
+  p5UpdateFocus();p5Save();
+}
+let p5SessionBase=0;
+function p5StartSession(){p5SessionBase=p5Data.planets[p5Current]?.total||0}
+function p5StopStudy(){
+  if(!p5Studying)return;
+  clearInterval(p5Timer);
+  const p=p5Data.planets[p5Current];
+  if(p){p.total=Math.max(p.total,p5SessionBase+Math.floor(p5Elapsed/60));while(p.phase<P5_THRESH.length&&p.total>=P5_THRESH[p.phase])p.phase++}
+  p5Studying=false;p5Timer=null;p5Elapsed=0;p5TimerTextReset();p5Save()
+}
+function p5TimerTextReset(){if(document.getElementById('p5Timer'))p5Timer.textContent='00:00:00';if(document.getElementById('p5Start'))p5Start.textContent='▶ Iniciar'}
+const oldToggle=p5ToggleStudy;
+p5ToggleStudy=function(){if(!p5Studying)p5StartSession();oldToggle()}
+function p5UpdateFocus(){
+ const p=p5Data.planets[p5Current];if(!p)return;
+ p5PlanetName.textContent=p.name;
+ const target=P5_THRESH[Math.min(p.phase,P5_THRESH.length-1)];
+ p5Remaining.textContent=p.phase>=P5_THRESH.length?'Planeta finalizado':Math.max(0,target-p.total)+' min';
+ const styles=[
+  'radial-gradient(circle at 35% 30%,#aaa,#555 48%,#171717 76%)',
+  'radial-gradient(circle at 35% 30%,#aaa,#79452d 45%,#1a0704 76%)',
+  'radial-gradient(circle at 35% 30%,#c9f1ff,#5b9fc9 45%,#112d47 76%)',
+  'radial-gradient(circle at 35% 30%,#b9eaff,#4c9d70 45%,#112d24 76%)',
+  'radial-gradient(circle at 35% 30%,#9be0ff,#2e83bd 45%,#061b35 76%)'
+ ];
+ p5PlanetOrb.style.background=styles[Math.min(p.phase,4)];
+}
+function p5RenderPlanets(){
+ const el=document.getElementById('p5Planets');if(!el)return;
+ el.innerHTML=p5Data.planets.map((p,i)=>`<div class="notice" onclick="p5OpenPlanet(${i})" style="cursor:pointer"><b>${p.name}</b><br><span class="muted">${P5_PHASES[Math.min(p.phase,P5_PHASES.length-1)]} · ${p.total} min</span></div>`).join('')||'<span class="muted">Nenhum planeta criado.</span>'
+}
+function p5Report(type,text){p5Data.reports.push({type,text,date:new Date().toLocaleString('pt-BR')});p5Save()}
+function p5RenderReports(){
+ const el=document.getElementById('p5Reports');if(!el)return;
+ el.innerHTML=p5Data.reports.map((r,i)=>`<div class="p5-report"><b>${r.type}</b> — ${r.text}<br><small>${r.date}</small><br><button onclick="p5Resolve(${i})">Resolver</button></div>`).join('')||'<span class="muted">Nenhuma denúncia registrada.</span>'
+}
+function p5Resolve(i){p5Data.reports.splice(i,1);p5Save()}
+function p5Add(kind){
+ const map={theme:'p5Theme',question:'p5Question',map:'p5Map',video:'p5Video'},el=document.getElementById(map[kind]);if(!el?.value.trim()){alert('Preencha o campo.');return}
+ alert(kind==='theme'?'Tema adicionado.':kind==='question'?'Questão adicionada com dificuldade de '+p5Difficulty.value+' pontos.':kind==='map'?'Mapa mental adicionado.':'Vídeo adicionado.');el.value=''
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&p5Focus.style.display!=='none')p5CloseFocus()});
+p5RenderPlanets();p5RenderReports();
+
+</script>
+
+<!-- ===== PROTÓTIPO 5: NOVAS ÁREAS ===== -->
+<section id="stellar5" class="view">
+  <button class="back" onclick="p5Back()">← Voltar</button>
+  <h2 class="title">Meu Sistema Stelar</h2>
+  <div class="panel p5-stellar-screen">
+    <div>
+      <div class="p5-stars"><div class="p5-star big"></div><div class="p5-star small"></div></div>
+      <button class="p5-wave p5-stellar" style="width:100%;margin-top:12px" onclick="p5CreatePlanet()">＋ Adicionar planeta</button>
+    </div>
+    <div>
+      <h3>Planetas</h3><div id="p5Planets"></div>
+      <div class="notice">O planeta evolui com o tempo de estudo acumulado. Ao sair do site, a sessão de cronômetro é zerada, mas a evolução alcançada permanece salva.</div>
+    </div>
+  </div>
+</section>
+
+<section id="admin5" class="view">
+  <button class="back" onclick="p5Back()">← Voltar</button><h2 class="title">Painel Administrativo</h2>
+  <div class="panel">
+    <div class="admin5grid">
+      <div class="notice"><b>Adicionar tema</b><br><input id="p5Theme" class="p5-select" placeholder="Nome do tema"><button onclick="p5Add('theme')">Adicionar</button></div>
+      <div class="notice"><b>Adicionar questão</b><br><input id="p5Question" class="p5-select" placeholder="Enunciado"><select id="p5Difficulty" class="p5-select"><option>10</option><option>20</option><option>30</option><option>40</option><option>60</option></select><button onclick="p5Add('question')">Adicionar</button></div>
+      <div class="notice"><b>Adicionar mapa mental</b><br><input id="p5Map" class="p5-select" placeholder="Nome do mapa"><button onclick="p5Add('map')">Adicionar</button></div>
+      <div class="notice"><b>Adicionar vídeo</b><br><input id="p5Video" class="p5-select" placeholder="Título do vídeo"><button onclick="p5Add('video')">Adicionar</button></div>
+    </div>
+    <h3>Denúncias de conteúdo</h3>
+    <div id="p5Reports"><span class="muted">Nenhuma denúncia registrada.</span></div>
+  </div>
+</section>
+
+<div id="p5Focus" class="p5-focus" style="display:none">
+  <button onclick="p5CloseFocus()">← Voltar</button>
+  <h2 id="p5PlanetName" class="title">Planeta</h2>
+  <div id="p5Timer" class="p5-timer">00:00:00</div>
+  <div class="muted" style="text-align:center">Falta para a próxima fase: <b id="p5Remaining">30 min</b></div>
+  <div id="p5PlanetOrb" class="p5-planet"></div>
+  <h3>Tempo de estudos</h3>
+  <div style="display:grid;gap:7px">
+    <button onclick="p5SetStudy(30)">30 min</button><button onclick="p5SetStudy(60)">60 min</button>
+    <button onclick="p5SetStudy(90)">90 min</button><button onclick="p5SetStudy(150)">150 min</button>
+    <button onclick="p5SetStudy(210)">210 min</button><button onclick="p5SetStudy(300)">300 min</button>
+    <button onclick="p5SetStudy(420)">420 min</button><button onclick="p5SetStudy(540)">540 min</button>
+    <button onclick="p5SetStudy(660)">660 min</button><button onclick="p5SetStudy(780)">780 min</button>
+  </div>
+  <button id="p5Start" class="p5-wave" style="width:100%;margin-top:10px" onclick="p5ToggleStudy()">▶ Iniciar</button>
+  <div class="notice"><b>Loja</b><br>Água, pedra, vida vegetal e vida inteligente serão desbloqueadas conforme os pontos e a evolução do planeta.</div>
+</div>
+
+<style>
+.admin5grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.admin5grid input,.admin5grid select{display:block;margin:8px 0}
+@media(max-width:700px){.admin5grid{grid-template-columns:1fr}}
+</style>
+
+</body>
+</html>
