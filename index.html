@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#02040a">
+<meta name="description" content="De'ot — Plataforma de estudos">
+<title>De'ot — Estudos Inteligentes</title>
+<style>
+:root{
+  --bg:#02040a;--panel:#07101d;--panel2:#0b1728;--text:#eaf8ff;--muted:#83a8ba;
+  --cyan:#17dfff;--blue:#1686ff;--green:#36f58a;--pink:#ff2b91;--yellow:#ffd34d;
+  --humanas:#ff2b91;--exatas:#1686ff;--linguagens:#9b6cff;--border:#1c4561;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#02040a;color:var(--text)}
+body{overflow-x:hidden;background:
+ radial-gradient(circle at 70% 15%,rgba(0,150,255,.10),transparent 28%),
+ radial-gradient(circle at 20% 80%,rgba(60,255,180,.07),transparent 28%),#02040a}
+button,select,input{font:inherit}button{cursor:pointer;color:var(--text)}
+.hidden{display:none!important}.app{min-height:100vh;position:relative}
+.app:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#6ddcff 1px,transparent 1px);background-size:7px 7px;mask-image:linear-gradient(120deg,transparent 5%,#000 30%,transparent 80%)}
+.topbar{height:62px;border-bottom:1px solid #17405b;background:rgba(3,8,18,.92);display:flex;align-items:center;gap:16px;padding:0 22px;position:sticky;top:0;z-index:20}
+.logo{font-size:28px;font-weight:800;letter-spacing:-2px;color:white;text-shadow:0 0 14px #16bfff}.logo span{color:#65ff9a}
+.search{flex:1;max-width:620px;border:1px solid #164563;background:#071321;border-radius:12px;padding:11px 15px;color:#aac5d5;outline:none}
+.top-actions{display:flex;gap:8px}.circle{width:38px;height:38px;border:1px solid #1a8bce;border-radius:50%;background:#071321}
+.layout{display:grid;grid-template-columns:205px 1fr;min-height:calc(100vh - 62px)}
+.sidebar{border-right:1px solid #12374e;background:rgba(3,9,18,.9);padding:15px 10px;position:sticky;top:62px;height:calc(100vh - 62px)}
+.navbtn{position:relative;width:100%;text-align:left;background:transparent;border:1px solid transparent;padding:13px 14px;margin:3px 0;border-radius:10px;color:#b7d0dc;transition:.2s;overflow:hidden}
+.navbtn:after,.glowbtn:after,.subject:after,.action:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(110,225,255,.75) 1px,transparent 1px);background-size:8px 8px;opacity:0;transform:translateX(-12px);transition:.35s}
+.navbtn:hover:after,.glowbtn:hover:after,.subject:hover:after,.action:hover:after{opacity:.65;transform:translateX(0)}
+.navbtn:hover,.navbtn.active{background:linear-gradient(90deg,#07316a,#062033);border-color:#178fff;color:#fff;box-shadow:0 0 18px rgba(0,144,255,.35)}
+.nav-section{font-size:11px;color:#557487;margin:18px 12px 7px;text-transform:uppercase}
+.main{padding:18px;min-width:0}.view{display:none}.view.active{display:block}
+.hero{border:1px solid #16445e;border-radius:16px;min-height:135px;padding:24px;background:
+ radial-gradient(ellipse at 25% 30%,rgba(0,120,255,.28),transparent 45%),
+ radial-gradient(ellipse at 75% 70%,rgba(0,255,140,.18),transparent 40%),#06101e;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-20%;background-image:radial-gradient(#32eaff 1.4px,transparent 1.5px);background-size:10px 10px;transform:rotate(-7deg);opacity:.55}
+.hero>*{position:relative}.hero h1{font-size:34px;margin:5px 0}.hero p{color:#8dd0df;margin:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.card{background:linear-gradient(145deg,rgba(7,18,31,.96),rgba(5,12,23,.96));border:1px solid #17425b;border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.card h3{margin:0 0 12px}.card p{color:#8baab8}.btnrow{display:flex;flex-wrap:wrap;gap:10px}
+.glowbtn,.action,.subject{position:relative;overflow:hidden;border:1px solid #1686ff;border-radius:9px;padding:11px 15px;background:#07182a;box-shadow:0 0 12px rgba(0,128,255,.18)}
+.glowbtn:hover,.action:hover{box-shadow:0 0 20px rgba(0,210,255,.35)}.danger{border-color:#ff376e}.success{border-color:#32e68a}
+.back{margin-bottom:14px}.muted{color:var(--muted)}.small{font-size:12px}
+.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.subject{text-align:left;min-height:100px}.subject strong{display:block;font-size:17px}.subject span{color:#9eb8c5;font-size:12px}.humanas{border-color:var(--humanas);box-shadow:0 0 18px rgba(255,43,145,.13)}.exatas{border-color:var(--exatas);box-shadow:0 0 18px rgba(22,134,255,.13)}.linguagens{border-color:var(--linguagens)}
+.topic-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.topic{padding:14px;border:1px solid #19445c;border-radius:10px;background:#071321}
+.mind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mind{padding:18px;border:1px solid #19516c;border-radius:12px;background:#071525}.mind h4{margin:0 0 6px}
+.chat-wrap{min-height:650px;position:relative;display:grid;grid-template-columns:250px 1fr;gap:12px}.chat-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#28dcff 1px,transparent 1px);background-size:9px 9px;opacity:.13;mask-image:radial-gradient(ellipse at center,#000,transparent 72%)}
+.chat-list,.chat-panel{position:relative;background:rgba(5,15,27,.86);border:1px solid #17445e;border-radius:14px;padding:14px}.question{padding:10px;border:1px solid #1b4057;border-radius:9px;margin:8px 0;background:#06111f}.tag{display:inline-block;padding:3px 7px;border-radius:99px;font-size:10px;border:1px solid currentColor;margin-bottom:5px}.tag.math{color:#1d9cff}.tag.fis{color:#29e39a}.tag.quim{color:#ff3f9b}.tag.hum{color:#ff7bc0}
+.chat-box{height:440px;overflow:auto}.msg{padding:10px 13px;border-radius:12px;background:#091b2b;border:1px solid #17435c;margin:8px 0;max-width:78%}.msg.me{margin-left:auto;border-color:#167fbb}
+.admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.admin-form{display:flex;gap:8px;flex-wrap:wrap}.admin-form input,.admin-form select{flex:1;min-width:140px;background:#06121f;border:1px solid #1b4b64;color:#dff7ff;border-radius:8px;padding:10px}
+.report{border:1px solid #7c2844;background:#190a13;padding:12px;border-radius:10px;margin-top:8px}.report button{margin-top:8px}
+.performance{height:310px;display:flex;align-items:end;gap:14px;padding:25px 20px 30px;border:1px solid #17435e;border-radius:12px;background:#050d18}
+.bar{flex:1;max-width:70px;background:linear-gradient(to top,#1479ff,#44e7ff);border-radius:6px 6px 0 0;position:relative;min-height:12px}.bar span{position:absolute;top:-22px;font-size:11px;width:100%;text-align:center}.axis{position:absolute}
+.stelar{min-height:calc(100vh - 100px);border:1px solid #17445f;border-radius:16px;overflow:hidden;position:relative;background:
+ radial-gradient(circle at 50% 45%,rgba(0,100,255,.12),transparent 40%),#02050d}
+.starscape{position:absolute;inset:0;background-image:radial-gradient(#fff 1px,transparent 1px),radial-gradient(#56cfff 1px,transparent 1px);background-size:53px 53px,89px 89px;opacity:.65}
+.stelar-content{position:relative;z-index:1;min-height:680px;padding:18px}.orbit{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);border:1px solid rgba(85,194,255,.55);border-radius:50%;width:600px;height:250px}.orbit.o2{width:430px;height:190px}.orbit.o3{width:280px;height:125px}.star{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 0 45px 12px rgba(255,180,40,.38)}.star.a{width:82px;height:82px;background:radial-gradient(circle,#fff6a5,#ff8c1e 65%,#ff4b00)}.star.b{width:48px;height:48px;left:57%;top:47%;background:radial-gradient(circle,#fff,#ffd329 60%,#ff7a00);box-shadow:0 0 30px 8px rgba(255,190,40,.3)}
+.planet-dot{position:absolute;left:27%;top:55%;width:27px;height:27px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9a806b,#2e241d 75%);box-shadow:0 0 10px #70513b}
+.stelar-actions{position:absolute;left:50%;top:72%;transform:translateX(-50%);display:flex;gap:12px}.stellar-title{text-align:center}.stellar-title h1{margin:0 0 5px}.stellar-title p{color:#7da3b4}
+.planet-split{display:grid;grid-template-columns:minmax(360px,1fr) 2fr;gap:12px;min-height:calc(100vh - 100px)}.study-space{border:1px solid #17445f;border-radius:16px;background:radial-gradient(circle at 50% 30%,rgba(0,120,255,.12),transparent 35%),#050a12;display:flex;align-items:center;justify-content:center;padding:28px}.study-space-inner{max-width:620px;text-align:center}.study-space-inner .logo{font-size:42px;margin-bottom:40px}.planet-view{min-height:calc(100vh - 100px);border:1px solid #17445f;border-radius:16px;position:relative;overflow:hidden;background:
+ radial-gradient(circle at 50% 45%,rgba(0,100,255,.15),transparent 30%),#02050d}
+.planet-top{display:grid;grid-template-columns:1fr 280px 1fr;align-items:start;gap:15px;padding:18px}.planet-time{text-align:center;border:1px solid #24607b;border-radius:10px;padding:10px;background:rgba(3,15,26,.75)}.planet-time strong{font-size:22px;color:#8aeaff}.study-clock{border:1px solid #24607b;border-radius:10px;padding:14px;text-align:center;background:rgba(3,15,26,.75)}.study-clock .big{font-size:36px;color:#79eaff;font-weight:bold}.planet-stage{height:520px;display:flex;align-items:center;justify-content:center;position:relative}.planet-sphere{width:310px;height:310px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#9d8e82,#5c5149 34%,#27211e 70%,#07080b);box-shadow:inset -35px -20px 55px #000,0 0 35px rgba(67,158,255,.15);transition:.7s}.stage1{background:radial-gradient(circle at 35% 28%,#b6a59a,#62554c 35%,#241d1b 72%,#050608)}.stage2{background:radial-gradient(circle at 25% 25%,#a87e5d,#4c3025 42%,#151010 72%,#040405)}.stage3{background:radial-gradient(circle at 35% 25%,#96a9b4,#506773 45%,#183240 72%,#05090d)}.stage4{background:radial-gradient(circle at 30% 20%,#7aa7bb,#245e73 45%,#123a4a 72%,#03080c)}.stage5{background:radial-gradient(circle at 30% 20%,#78b5d0,#287b9b 38%,#12607b 60%,#0b2632 80%)}.stage6{background:radial-gradient(circle at 30% 20%,#86bd7c,#2c774c 38%,#155a5e 60%,#0a2834 80%)}
+.planet-bottom{display:flex;justify-content:center;gap:12px;align-items:end;padding:0 18px 18px}.study-menu{position:relative}.study-options{display:none;position:absolute;bottom:50px;left:0;background:#071321;border:1px solid #1d5068;border-radius:10px;padding:6px;min-width:160px;z-index:4}.study-options.open{display:block}.study-options button{display:block;width:100%;padding:9px;background:transparent;border:0;text-align:left;border-radius:6px}.study-options button:hover{background:#0c2940}
+.mini-back{position:absolute;right:16px;top:16px}.planet-status{position:absolute;left:18px;bottom:18px;padding:8px 12px;border:1px solid #24536b;border-radius:8px;background:rgba(2,9,16,.8);color:#91c8d7}.store{margin-top:12px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:50}.modal{width:min(700px,92vw);max-height:86vh;overflow:auto;background:#071321;border:1px solid #2089ba;border-radius:16px;padding:18px;box-shadow:0 0 45px rgba(0,155,255,.25)}
+@media(max-width:900px){.planet-split{grid-template-columns:1fr}.study-space{min-height:280px}.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;display:flex;overflow:auto;gap:5px}.nav-section{display:none}.navbtn{min-width:max-content}.grid2,.subjects,.admin-grid,.chat-wrap{grid-template-columns:1fr}.grid3,.mind-grid,.topic-list{grid-template-columns:1fr 1fr}.topbar{padding:0 10px}.search{display:none}.planet-top{grid-template-columns:1fr}.orbit{width:85vw!important;height:35vw!important}.planet-stage{height:420px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="logo">De'<span>ot</span></div>
+  <input class="search" placeholder="Buscar conteúdos, mapas, quizzes..." />
+  <div class="top-actions"><button class="circle">🔔</button><button class="circle" onclick="showView('perfil')">◯</button></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <button class="navbtn active" data-view="inicio">⌂ Início</button>
+  <button class="navbtn" data-view="ranking">♛ Ranking</button>
+  <button class="navbtn" data-view="duvidas">☵ Dúvidas</button>
+  <button class="navbtn" data-view="mapas">♧ Mapas Mentais</button>
+  <button class="navbtn" data-view="quiz">▦ Quiz</button>
+  <button class="navbtn" data-view="perfil">♙ Meu Perfil</button>
+  <button class="navbtn" data-view="config">⚙ Configurações</button>
+  <div class="nav-section">Administração</div>
+  <button class="navbtn" data-view="admin">⌘ Área administrativa</button>
+</aside>
+
+<main class="main">
+<section id="inicio" class="view active">
+  <div class="hero"><h1>Estudos Inteligentes</h1><p>Disciplina hoje, liberdade amanhã.</p></div>
+  <div class="grid2">
+    <div class="card"><h3>Atalhos</h3><div class="btnrow">
+      <button class="glowbtn" onclick="showView('ranking')">♛ Ranking</button>
+      <button class="glowbtn" onclick="showView('duvidas')">☵ Dúvidas</button>
+      <button class="glowbtn" onclick="showView('stelar')">🌌 Meu Sistema Stelar</button>
+    </div></div>
+    <div class="card"><h3>Seu progresso</h3><p>Tempo de estudo atual: <strong id="homeClock">00:00:00</strong></p><p>Pontos: <strong id="points">3000 ✦</strong></p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Matérias</h3><div class="subjects">
+    <button class="subject humanas" onclick="openArea('humanas')">🏛 <strong>Humanas</strong><span>História, Geografia, Filosofia, Sociologia e Linguagens</span></button>
+    <button class="subject exatas" onclick="openArea('exatas')">⚛ <strong>Exatas</strong><span>Matemática, Física e Química</span></button>
+  </div></div>
+</section>
+
+<section id="area" class="view">
+  <button class="glowbtn back" onclick="goBack()">← Voltar</button>
+  <div class="card"><h2 id="areaTitle"></h2><p class="muted">Escolha uma matéria.</p><div id="areaSubjects" class="subjects"></div></div>
+</section>
+
+<section id="temas" class="view">
+  <button class="glowbtn back" onclick="goBack()">← Voltar</button>
+  <div class="card"><h2 id="temaTitle"></h2><div id="topicList" class="topic-list"></div></div>
+</section>
+
+<section id="mapasMateria" class="view">
+  <button class="glowbtn back" onclick="goBack()">← Voltar</button>
+  <div class="card"><h2 id="mapTitle"></h2><p class="muted">Somente mapas da matéria selecionada aparecem aqui.</p><div id="mindList" class="mind-grid"></div></div>
+</section>
+
+<section id="mapas" class="view">
+  <button class="glowbtn back" onclick="goBack()">← Voltar</button>
+  <div class="card"><h2>Mapas Mentais</h2><p class="muted">Entre por uma matéria para acessar apenas os mapas correspondentes.</p><div class="subjects">
+    <button class="subject exatas" onclick="openArea('exatas');openSubject('Matemática')">▦ Matemática</button>
+    <button class="subject exatas" onclick="openArea('exatas');openSubject('Física')">⚛ Física</button>
+    <button class="subject exatas" onclick="openArea('exatas');openSubject('Química')">⚗ Química</button>
+    <button class="subject humanas" onclick="openArea('humanas');openSubject('História')">🏛 História</button>
+    <button class="subject humanas" onclick="openArea('humanas');openSubject('Geografia')">🌍 Geografia</button>
+    <button class="subject linguagens" onclick="openArea('humanas');openSubject('Linguagens')">✎ Linguagens</button>
+  </div></div>
+</section>
+
+<section id="duvidas" class="view">
+  <button class="glowbtn back" onclick="goBack()">← Voltar</button>
+  <div class="chat-wrap">
+    <div class="chat-list"><h3>Questões</h3>
+      <div class="question"><span class="tag math">Matemática</span><br>Equações do 2º grau</div>
+      <div class="question"><span class="tag fis">Física</span><br>Plano inclinado</div>
+      <div class="question"><span class="tag quim">Química</span><br>Geometria molecular</div>
+      <div class="question"><span class="tag hum">História</span><br>Revolução Francesa</div>
+    </div>
+    <div class="chat-panel"><h3>Chat de dúvidas</h3><div class="chat-box" id="chatBox"><div class="msg">Olá! Pergunte sobre uma matéria.</div></div>
+      <div class="btnrow"><input id="chatInput" style="flex:1;background:#06121f;border:1px solid #1b4b64;color:white;border-radius:9px;padding:11px" placeholder="Digite sua dúvida..."><button class="glowbtn" onclick="sendMsg()">Enviar</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="perfil" class="view">
+  <button class="glowbtn back" onclick="goBack()">← Voltar</button>
+  <div class="card"><h2>Meu Perfil</h2><p class="muted">Acompanhe seus estudos.</p><button class="glowbtn" onclick="togglePerf()">📊 Desempenho</button>
+    <div id="perf" class="card hidden" style="margin-top:14px"><div class="btnrow"><select id="perfMat" class="glowbtn" onchange="drawPerf()"><option>Matemática</option><option>Física</option><option>Química</option><option>História</option><option>Geografia</option></select><select id="perfTema" class="glowbtn" onchange="drawPerf()"><option>Equações</option><option>Funções</option><option>Revoluções</option></select></div><div id="chart" class="performance"></div></div>
+  </div>
+</section>
+
+<section id="ranking" class="view"><button class="glowbtn back" onclick="goBack()">← Voltar</button><div class="card"><h2>Ranking</h2><div id="rankList"></div></div></section>
+<section id="quiz" class="view"><button class="glowbtn back" onclick="goBack()">← Voltar</button><div class="card"><h2>Quiz</h2><p>Escolha uma matéria para iniciar.</p><div class="subjects"><button class="subject exatas">▦ Matemática</button><button class="subject exatas">⚛ Física</button><button class="subject humanas">🏛 História</button></div></div></section>
+<section id="config" class="view"><button class="glowbtn back" onclick="goBack()">← Voltar</button><div class="card"><h2>Configurações</h2><p class="muted">Preferências da plataforma.</p></div></section>
+
+<section id="admin" class="view"><button class="glowbtn back" onclick="goBack()">← Voltar</button><div class="card"><h2>Painel Administrativo</h2><div class="admin-grid">
+  <div class="card"><h3>Adicionar tema</h3><div class="admin-form"><input id="newTema" placeholder="Nome do tema"><button class="glowbtn success" onclick="adminAdd('tema')">Adicionar</button></div></div>
+  <div class="card"><h3>Adicionar questão</h3><div class="admin-form"><input id="newQuest" placeholder="Questão"><select id="difficulty"><option>Fácil</option><option>Médio</option><option>Difícil</option></select><button class="glowbtn success" onclick="adminAdd('questao')">Adicionar</button></div></div>
+  <div class="card"><h3>Adicionar mapa mental</h3><div class="admin-form"><input id="newMapa" placeholder="Título do mapa"><button class="glowbtn success" onclick="adminAdd('mapa')">Adicionar</button></div></div>
+  <div class="card"><h3>Adicionar vídeo</h3><div class="admin-form"><input id="newVideo" placeholder="Título / URL"><button class="glowbtn success" onclick="adminAdd('video')">Adicionar</button></div></div>
+  <div class="card" style="grid-column:1/-1"><h3>Denúncias de conteúdo explícito</h3><div id="reports"><p class="muted">Nenhuma denúncia registrada.</p></div></div>
+</div></div></section>
+
+<section id="stelar" class="view"><button class="glowbtn back" onclick="goBack()">← Voltar</button><div class="stelar"><div class="starscape"></div><div class="stelar-content">
+  <div class="stellar-title"><h1>Meu Sistema Stelar</h1><p>Estude, evolua seus mundos e construa uma civilização.</p></div>
+  <div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div><div class="star a"></div><div class="star b"></div><div class="planet-dot" title="Planeta" onclick="openPlanet()" style="cursor:pointer"></div>
+  <div class="stelar-actions"><button class="glowbtn" onclick="openPlanet()">＋ Adicionar planeta</button><button class="glowbtn" onclick="openStore()">🛒 Loja</button></div>
+</div></div></section>
+
+<section id="planet" class="view"><div class="planet-split">
+  <div class="planet-view">
+    <button class="glowbtn mini-back" onclick="goBack()">← Voltar</button>
+    <div class="planet-top"><div class="planet-time"><strong id="planetNameLabel">Novo Planeta</strong><br><span id="planetAge">passaram-se 0 dias no seu planeta</span><br><span class="muted">A evolução alcançada fica salva.</span></div>
+      <div class="study-clock"><div class="small">tempo de estudo</div><div class="big" id="studyClock">00:00:00:00</div><div class="small">dias · horas · min · seg</div></div><div></div>
+    </div>
+    <div class="planet-stage"><div id="planetSphere" class="planet-sphere stage1"></div><div class="planet-status" id="planetStatus">Fase 1 — Rocha · faltam 30 min</div></div>
+    <div class="planet-bottom"><div class="study-menu"><button class="glowbtn" onclick="toggleStudyMenu()">⏱ Tempo de estudos ▾</button><div class="study-options" id="studyOptions">
+      <button onclick="selectStudy(30)">30 min</button><button onclick="selectStudy(60)">60 min</button><button onclick="selectStudy(90)">90 min</button><button onclick="selectStudy(150)">150 min</button><button onclick="selectStudy(210)">210 min</button><button onclick="selectStudy(300)">300 min</button><button onclick="selectStudy(420)">420 min</button><button onclick="selectStudy(540)">540 min</button><button onclick="selectStudy(660)">660 min</button><button onclick="selectStudy(780)">780 min</button>
+    </div></div><button class="glowbtn success" onclick="startStudy()">▶ Iniciar</button><button class="glowbtn" onclick="openStore()">🛒 Loja</button></div>
+  </div>
+  <div class="study-space"><div class="study-space-inner"><div class="logo">De'<span>ot</span></div><h2>Espaço de estudo</h2><p>Continue navegando pelo site e estudando enquanto seu planeta evolui.</p><div class="grid2"><button class="glowbtn" onclick="showView('mapas')">♧ Mapas Mentais</button><button class="glowbtn" onclick="showView('quiz')">▦ Quiz</button><button class="glowbtn" onclick="showView('duvidas')">☵ Dúvidas</button><button class="glowbtn" onclick="showView('perfil')">♙ Perfil</button></div></div></div>
+</div></section>
+</main></div></div>
+
+<div id="modal" class="modal-bg hidden"><div class="modal"><button class="glowbtn" onclick="closeModal()">← Voltar</button><div id="modalContent"></div></div></div>
+
+<script>
+const saved=JSON.parse(localStorage.getItem('deotStelar')||'null');
+const state={view:'inicio',history:[],area:null,subject:null,studyTarget:30,studySeconds:0,studyRunning:false,
+ planetPhase:saved?.planetPhase||1,planetName:saved?.planetName||'Novo Planeta',points:saved?.points??3000,reports:[]};
+function savePlanet(){localStorage.setItem('deotStelar',JSON.stringify({planetPhase:state.planetPhase,planetName:state.planetName,points:state.points}))}
+
+const phases=[30,60,90,150,210,300,420,540,660,780];
+const subjects={exatas:['Matemática','Física','Química'],humanas:['História','Geografia','Filosofia','Sociologia','Linguagens']};
+const maps={Matemática:['Equações modulares','Funções','Geometria'],Física:['Plano inclinado','Cinemática','Leis de Newton'],Química:['Geometria molecular','Ligações químicas','Estequiometria'],História:['Revolução Francesa','Brasil República'],Geografia:['Degradação do solo','Clima e relevo'],Filosofia:['Ética','Conhecimento'],Sociologia:['Cultura','Sociedade'],Linguagens:['Gêneros textuais','Figuras de linguagem']};
+let selectedMinutes=30, timer=null, startAt=null;
+
+function showView(id,push=true){if(push && state.view!==id) state.history.push(state.view); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id)?.classList.add('active');state.view=id;document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));window.scrollTo(0,0)}
+function goBack(){const prev=state.history.pop()||'inicio';showView(prev,false)}
+function openArea(area){state.area=area;state.history.push(state.view);document.getElementById('areaTitle').textContent=area==='exatas'?'Exatas':'Humanas';document.getElementById('areaSubjects').innerHTML=subjects[area].map(s=>`<button class="subject ${area==='exatas'?'exatas':(s==='Linguagens'?'linguagens':'humanas')}" onclick="openSubject('${s}')"><strong>${s}</strong><span>Ver temas e mapas mentais</span></button>`).join('');showView('area',false)}
+function openSubject(s){state.subject=s;state.history.push(state.view);document.getElementById('temaTitle').textContent=s;document.getElementById('topicList').innerHTML=(maps[s]||['Tema 1','Tema 2','Tema 3']).map(t=>`<button class="topic" onclick="openMaps('${s}')">${t}<div class="small muted">Acessar conteúdo</div></button>`).join('');showView('temas',false)}
+function openMaps(s){state.history.push(state.view);document.getElementById('mapTitle').textContent=`Mapas Mentais — ${s}`;document.getElementById('mindList').innerHTML=(maps[s]||[]).map(t=>`<div class="mind"><h4>${t}</h4><p class="muted small">Mapa correspondente a ${s}.</p><button class="glowbtn" onclick="alert('Mapa aberto: ${t}')">Abrir</button></div>`).join('');showView('mapasMateria',false)}
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+
+function togglePerf(){document.getElementById('perf').classList.toggle('hidden');drawPerf()}
+function drawPerf(){const vals=[48,65,58,82,72,90];document.getElementById('chart').innerHTML=vals.map((v,i)=>`<div class="bar" style="height:${v*2.2}px"><span>${v}%</span></div>`).join('')}
+function sendMsg(){const i=document.getElementById('chatInput');if(!i.value.trim())return;document.getElementById('chatBox').insertAdjacentHTML('beforeend',`<div class="msg me">${escapeHtml(i.value)}</div><div class="msg">Posso ajudar a explicar esse conteúdo passo a passo.</div>`);i.value=''}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function adminAdd(type){const ids={tema:'newTema',questao:'newQuest',mapa:'newMapa',video:'newVideo'};const el=document.getElementById(ids[type]);if(!el?.value.trim())return;el.value='';alert(type+' adicionado com sucesso.')}
+function addReport(source='Mapa mental',content='Conteúdo sinalizado'){state.reports.push({source,content});document.getElementById('reports').innerHTML=state.reports.map((r,i)=>`<div class="report"><strong>Denúncia #${i+1}</strong><br>${r.source}: ${r.content}<br><button class="glowbtn danger" onclick="this.parentElement.remove()">Revisar denúncia</button></div>`).join('')}
+function openPlanet(){
+ if(!localStorage.getItem('deotStelar')){document.getElementById('modalContent').innerHTML=`<h2>Criar planeta</h2><p class="muted">Dê um nome ao seu novo mundo.</p><input id="planetNameInput" style="width:100%;background:#06121f;border:1px solid #1b4b64;color:white;border-radius:9px;padding:12px" value="Novo Planeta"><div style="margin-top:12px"><button class="glowbtn success" onclick="createPlanet()">Criar planeta</button></div>`;document.getElementById('modal').classList.remove('hidden');return}
+ state.history.push(state.view);showView('planet',false);renderPlanet()
+}
+function createPlanet(){state.planetName=document.getElementById('planetNameInput').value.trim()||'Novo Planeta';state.planetPhase=1;state.points=3000;savePlanet();closeModal();state.history.push(state.view);showView('planet',false);renderPlanet()}
+
+function renderPlanet(){document.getElementById('planetNameLabel').textContent=state.planetName;const elapsed=state.studySeconds;const total=phases[state.planetPhase-1]*60;const remain=Math.max(0,total-elapsed);document.getElementById('planetStatus').textContent=`Fase ${state.planetPhase} — ${phaseName(state.planetPhase)} · faltam ${formatMin(remain)}`;document.getElementById('planetSphere').className='planet-sphere stage'+Math.min(state.planetPhase,6)}
+function phaseName(p){return ['Rocha','Rocha com veios de lava e vulcões','Atmosfera','Pequenos lagos','Oceanos','Vida vegetal','Crescimento vegetal','Vida animal','Vida inteligente','Cidades e naves'][p-1]||'Civilização interestelar'}
+function formatMin(sec){return Math.ceil(sec/60)+' min'}
+function toggleStudyMenu(){document.getElementById('studyOptions').classList.toggle('open')}
+function selectStudy(m){selectedMinutes=m;document.getElementById('studyOptions').classList.remove('open')}
+function startStudy(){if(state.studyRunning)return;state.studyRunning=true;startAt=Date.now();timer=setInterval(tick,1000)}
+function tick(){state.studySeconds++;if(state.studySeconds>=phases[state.planetPhase-1]*60){state.planetPhase=Math.min(state.planetPhase+1,10);state.studySeconds=0;state.points+=100;savePlanet()}const s=state.studySeconds;document.getElementById('studyClock').textContent=`00:${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;renderPlanet()}
+function openStore(){document.getElementById('modalContent').innerHTML=`<h2>Loja do planeta</h2><p class="muted">Itens desbloqueiam conforme pontos e evolução.</p><div class="grid2">
+<div class="card"><h3>💧 Água</h3><p>500 ✦</p><button class="glowbtn" onclick="buy(500,'Água')">Comprar</button></div>
+<div class="card"><h3>🪨 Pedra</h3><p>250 ✦</p><button class="glowbtn" onclick="buy(250,'Pedra')">Comprar</button></div>
+<div class="card"><h3>🌱 Vida vegetal</h3><p>1000 ✦</p><button class="glowbtn" onclick="buy(1000,'Vida vegetal')">Comprar</button></div>
+<div class="card"><h3>🧠 Vida inteligente</h3><p>2000 ✦</p><button class="glowbtn" onclick="buy(2000,'Vida inteligente')">Comprar</button></div></div>`;document.getElementById('modal').classList.remove('hidden')}
+function buy(cost,name){if(state.points<cost)return alert('Pontos insuficientes.');state.points-=cost;savePlanet();document.getElementById('points').textContent=state.points+' ✦';alert(name+' comprado.')}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+function openStelarFromNav(){showView('stelar')}
+document.getElementById('rankList').innerHTML=['LucasNeri','MarianaSilva','Gabriel123','AnaClara','Pedro_Hist','RafaGeo','JuliaQuim'].map((n,i)=>`<div class="question">${i+1}º <strong>${n}</strong><span style="float:right">${2850-i*160} ✦</span></div>`).join('');
+window.addEventListener('beforeunload',()=>{ state.studySeconds=0; });
+document.getElementById('points').textContent=state.points+' ✦';
+renderPlanet();
+
+</script>
+</body>
+</html>
